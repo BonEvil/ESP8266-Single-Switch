@@ -72,3 +72,5 @@ Now if you ever have to move the device to a different location, you need only c
 
 **Disclaimer:**
 I am in no way an expert on the ESP8266, development boards or micro-electronics in general. However, I have started to experiment extensively with them. I am a mobile application developer professionally which has led me to working with many peripherals including Bluetooth LE scanners and dongles, card reader sleds, and others. I have now ventured in to the world of IoT and I'm having fun so...
+
+\* Sorry, but I didn't capture any names as I was furiously typing away at this and it didn't originally occur to me to give credit. On the other hand, though, these were all open source with license to change the code for any purpose. But just to be clear, I'm feel a little bad about not giving the correct credits. As retribution, feel free to leave out my name if your next works uses code from here. :)
