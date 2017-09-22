@@ -25,8 +25,10 @@ The ESP8266 uses 3.3V as it could get damaged using 5v to power it. The problem 
 # The Setup
 The ESP8266 requires 3.3v on the VCC and Ground on the GND to power the device. 3.3v is also supplied to the EN pin in order to power up the WiFi (non-sleep mode). Ground is also applied to the GPIO15 pin so that the device knows to use it's on-board memory to run the program.
 
-In a typical home, a single switch (not a 3-way switch) is either open or closed. The ESP8266 needs to detect either HIGH or LOW on GPIO16 in order to determine if which way the switch is positioned. Since the home switch is either open or closed, we need to add a resistor from GPIO16 to VCC to simulate the HIGH when the switch is in the OFF (open) position. One side of the switch is connected to Ground (GND) and the other to GPIO16. When the switch is in the ON (closed) position, GPIO16 gets the LOW signal.
+In a typical home, a single switch (not a 3-way switch) is either open or closed. The ESP8266 needs to detect either HIGH or LOW on GPIO16 in order to determine which way the switch is positioned. Since the home switch is either open or closed, we need to add a resistor from GPIO16 to VCC to simulate the HIGH when the switch is in the OFF (open) position. One side of the switch is connected to Ground (GND) and the other to GPIO16. When the switch is in the ON (closed) position, GPIO16 gets the LOW signal.
 
 GPIO5 is connected to the negative trigger of the relay board to either turn the light on or turn it off. The ESP8266 will get either an ON or OFF directive from Alexa that will directly translate to either turning the relay ON or OFF. If the light is already ON, sending a 'Turn on the xxxxxx light' will have no effect as the relay is already in the ON position. The switch, however, will simply change the relay state to it's opposite as the switch position is changed. Therefore, it is possible that the light could be ON whether the switch is UP or DOWN. It all depends on the current state of the relay.
 
-The following shows the basic circuit diagram.
+The following shows the basic circuit diagram:
+
+![Circuit](https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/ESP8266-Switch-and-Relay.png)
