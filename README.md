@@ -42,6 +42,29 @@ It is initially set up as an unsecured network for easy access. Just connect to 
 
 <img src="https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/index.html.png" style="width:300px" />
 
+Now just fill in the form and submit.
+
+**Access Point SSID**
+This is what you want advertised as the access point name, but more importantly, how you want Alexa to recognize the device. i.e. Living Room Light or The Party _(I have one hooked up to a disco light)_
+
+Then you can say "Alexa, turn on the party" and she will respond appropriately.
+
+**Access Point Password**
+This is the password that you will need to connect to the new access point. I made it mandatory because.... security. Must be at least 8 characters because the ESP8266 doesn't like it less than that when set up as an access point.
+
+**Station SSID**
+This is the network SSID that you want the device to connect to.
+
+**Station Password**
+Assuming that you have a secured network as it won't allow an empty string to pass validation.
+
+Speaking of validation, I didn't do any robust validation here. I may add some later. But as a guideline, do not use : (colon) or ; (semicolon) in any of the inputs. I am saving the network variables delimited by the : and ending with the ; in the EEPROM. So in order to retrieve them successfully, don't do it.
+
+# Accessing
+Once the form is successfully submitted, you can change back to your home network (the ESP8266 will kick you off anyway) and you should see the newly created access point in your network settings. There are now two ways in which you can access it again. The first is to connect to the new network SSID (with password this time) and navigate back to 192.168.4.1 so you can see the form again. The second way is to stay on your home network and (if your devices support mDNS) connect to it using a special local network name. This name is whatever you named the device minus the spaces. i.e. *Living Room Light* becomes *livingroomlight.local* on the network. This is another reason to not get crazy with the names (not to mention that Alexa may have issue with it as well).
+
+Now if you ever have to move the device to a different location, you need only connect to it and change it through the form.
+(**Side note:** since this creates a unique id that Alexa stores, when you change the name you may not have to have Alexa poll for new devices again. She will randomly check on devices and will automatically update the name if you changed it.)
 
 **Disclaimer:**
-I am in no way an expert on the ESP8266 or micro-electronics in general. However, I have started to experiment extensively with them. I am a mobile application developer professionally which has led me to working with many peripherals including Bluetooth LE scanners and dongles, card reader sleds, and others. I have now ventured in to the world of IoT and I'm having fun so...
+I am in no way an expert on the ESP8266, development boards or micro-electronics in general. However, I have started to experiment extensively with them. I am a mobile application developer professionally which has led me to working with many peripherals including Bluetooth LE scanners and dongles, card reader sleds, and others. I have now ventured in to the world of IoT and I'm having fun so...
