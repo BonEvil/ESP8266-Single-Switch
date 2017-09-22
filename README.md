@@ -31,7 +31,7 @@ GPIO5 is connected to the negative trigger of the relay board to either turn the
 
 The following shows the basic circuit diagram:
 
-![Circuit](https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/ESP8266-Switch-and-Relay.png)
+<img src="https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/ESP8266-Switch-and-Relay.png" style="width:300px" />
 
 # Access Point
 Since this requires no code configuration, it contains an access point for remotely setting up the device to connect to the local network as well as giving it a name for Alexa to recognize.
@@ -40,8 +40,7 @@ The access point initializes with the SSID 'ESP8266 Thing XXXX' where XXXX is th
 
 It is initially set up as an unsecured network for easy access. Just connect to it from the network settings on your computer or phone and then navigate to the root IP (192.168.4.1) which will render a page like the following:
 
-![Root](https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/index.html.png)
-
+<img src="https://github.com/BonEvil/ESP8266-Single-Switch/raw/master/resources/index.html.png" style="width:300px" />
 
 
 **Disclaimer:**
