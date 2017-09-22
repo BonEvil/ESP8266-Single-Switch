@@ -50,15 +50,19 @@ This is what you want advertised as the access point name, but more importantly,
 Then you can say "Alexa, turn on the party" and she will respond appropriately.
 
 **Access Point Password**
-This is the password that you will need to connect to the new access point. I made it mandatory because.... security. Must be at least 8 characters because the ESP8266 doesn't like it less than that when set up as an access point.
+This is the password that you will need to connect to the new access point. I made it mandatory because.... security. Must be at least 8 characters since the ESP8266 doesn't like it less than that when set up as an access point.
 
 **Station SSID**
 This is the network SSID that you want the device to connect to.
 
 **Station Password**
-Assuming that you have a secured network as it won't allow an empty string to pass validation.
+I'm assuming that you have a secured network as it won't allow an empty string to pass validation.
 
-Speaking of validation, I didn't do any robust validation here. I may add some later. But as a guideline, do not use : (colon) or ; (semicolon) in any of the inputs. I am saving the network variables delimited by the : and ending with the ; in the EEPROM. So in order to retrieve them successfully, don't do it.
+Speaking of validation, I didn't do any robust validation on the form. I may add some later. But as a guideline, do not use : (colon) or ; (semicolon) in any of the inputs. I am saving the network variables delimited by the : and ending with the ; in the EEPROM. So in order to retrieve them successfully, don't do it.
+
+_**Reset**_
+
+The Reset button will clear out the EEPROM and set the ESP8266 back to the default SSID. Warning: there is no warning before this happens. You click it, it's happening. Not that it is very hard to set back to whatever you want anyway.
 
 # Accessing
 Once the form is successfully submitted, you can change back to your home network (the ESP8266 will kick you off anyway) and you should see the newly created access point in your network settings. There are now two ways in which you can access it again. The first is to connect to the new network SSID (with password this time) and navigate back to 192.168.4.1 so you can see the form again. The second way is to stay on your home network and (if your devices support mDNS) connect to it using a special local network name. This name is whatever you named the device minus the spaces. i.e. *Living Room Light* becomes *livingroomlight.local* on the network. This is another reason to not get crazy with the names (not to mention that Alexa may have issue with it as well).
