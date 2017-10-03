@@ -30,7 +30,7 @@ String localName;
 
 // PINS FOR RELAY ACTIVATION AND SWITCH
 const int relayPin = 5;
-const int switchPin = 16;
+const int switchPin = 4;
 
 // HOLDS CURRENT SWITCH STATE (true=ON, false=OFF)
 boolean isSwitchOn;
@@ -43,7 +43,7 @@ void setup(){
 
   // SET UP THE PIN CONFIGURATIONS
   pinMode(relayPin, OUTPUT);
-  pinMode(switchPin, INPUT);
+  pinMode(switchPin, INPUT_PULLUP);
 
   // SET INITIAL SWITCH STATE
   isSwitchOn = switchOn();
@@ -81,7 +81,7 @@ void initializeNetworkVariables(){
   String mem_ap_pass = "";
   String mem_st_ssid = "";
   String mem_st_pass = "";
-  
+
   int splitCount = 0;
 
   // THE NETWORK VARIABLES ARE STORED INLINE DELIMITED BY : AND ENDING WITH ;
@@ -113,9 +113,9 @@ void initializeNetworkVariables(){
   }
 
   // MAKE SURE WE HAVE ALL OUR VARIABLES
-  if (mem_st_ssid.length() > 0 && 
-    mem_st_pass.length() > 0 && 
-    mem_ap_ssid.length() > 0 && 
+  if (mem_st_ssid.length() > 0 &&
+    mem_st_pass.length() > 0 &&
+    mem_ap_ssid.length() > 0 &&
     mem_ap_pass.length() > 0){
       // SET OUR NETWORK VARIABLES
       networkVariables = {mem_ap_ssid,mem_ap_pass,mem_st_ssid,mem_st_pass};
@@ -136,8 +136,8 @@ void setupDefaultNetworkVariables(){
 }
 
 void setupClientIfAvailable(){ // IF WE HAVE NETWORK SSID AND PASSWORD, TRY TO CONNECT
-  if (sizeof(networkVariables) > 0 && 
-      networkVariables.st_ssid.length() > 0 && 
+  if (sizeof(networkVariables) > 0 &&
+      networkVariables.st_ssid.length() > 0 &&
       networkVariables.st_pass.length() > 0){
     Serial.println("");
     Serial.println("ssid: "+networkVariables.st_ssid);
@@ -146,10 +146,10 @@ void setupClientIfAvailable(){ // IF WE HAVE NETWORK SSID AND PASSWORD, TRY TO C
     if (WiFi.status() != WL_DISCONNECTED){
       Serial.println("disconnecting from network");
       WiFi.disconnect();
-    }  
+    }
     WiFi.begin (networkVariables.st_ssid.c_str(),networkVariables.st_pass.c_str());
     Serial.println ( "" );
-  
+
     int count = 0;
     // Wait for connection
     while ( WiFi.status() != WL_CONNECTED ) {
@@ -161,18 +161,18 @@ void setupClientIfAvailable(){ // IF WE HAVE NETWORK SSID AND PASSWORD, TRY TO C
         return;
       }
     }
-  
+
     Serial.println ( "" );
     Serial.print ( "Connected to " );
     Serial.println ( WiFi.SSID() );
     Serial.print ( "IP address: " );
     Serial.println ( WiFi.localIP() );
-  
+
     long rssi = WiFi.RSSI();
     Serial.print("Signal strength (RSSI):");
     Serial.print(rssi);
     Serial.println(" dBm");
-    
+
     Serial.println ( "HTTP server started" );
 
     if (MDNS.begin(localName.c_str())){
@@ -190,7 +190,7 @@ void setupClientIfAvailable(){ // IF WE HAVE NETWORK SSID AND PASSWORD, TRY TO C
 void setupAccessPoint(){ // SET UP OUR ACCESS POINT FROM OUR STORED EEPROM OR DEFAULT SETTINGS
   WiFi.mode(WIFI_AP_STA);
   if (sizeof(networkVariables) > 0){
-    if(networkVariables.ap_ssid.length() > 0 && 
+    if(networkVariables.ap_ssid.length() > 0 &&
        networkVariables.ap_pass.length() > 0){
        WiFi.softAP(networkVariables.ap_ssid.c_str(),networkVariables.ap_pass.c_str());
     } else {
@@ -216,32 +216,32 @@ void loop(){
   }
 
   int packetSize = UDP.parsePacket();
-      
+
   if(packetSize) {
     Serial.println("");
     Serial.print("Received packet of size ");
     Serial.println(packetSize);
     Serial.print("From ");
     IPAddress remote = UDP.remoteIP();
-    
+
     for (int i =0; i < 4; i++) {
       Serial.print(remote[i], DEC);
       if (i < 3) {
         Serial.print(".");
       }
     }
-    
+
     Serial.print(", port ");
     Serial.println(UDP.remotePort());
-    
+
     int len = UDP.read(packetBuffer, 255);
-    
+
     if (len > 0) {
         packetBuffer[len] = 0;
     }
 
     String request = packetBuffer;
-     
+
     if(request.indexOf('M-SEARCH') > 0) {
         if(request.indexOf("urn:Belkin:device:**") > 0) {
             Serial.println("Responding to search request ...");
@@ -249,7 +249,7 @@ void loop(){
         }
     }
   }
-    
+
   delay(10);
 }
 
@@ -258,14 +258,14 @@ void setupNewNetworkVariables(NetworkVariables variables){ // SETS THE NEW ACCES
   int ap_passLen = variables.ap_pass.length();
   int st_ssidLen = variables.st_ssid.length();
   int st_passLen = variables.st_pass.length();
-  
+
   if (ap_ssidLen > 0 && ap_passLen > 0 && st_ssidLen > 0 && st_passLen > 0){
     int totalLen = (ap_ssidLen + ap_passLen + st_ssidLen + st_passLen + 5); // 3x : and 1x ; and 1x \0
-    
+
     String store = variables.ap_ssid+":"+variables.ap_pass+":"+variables.st_ssid+":"+variables.st_pass+";";
 
     clearMemory();
-  
+
     for (int i=0;i<totalLen;++i){
       EEPROM.write(i,store[i]);
     }
@@ -352,11 +352,11 @@ void handleRoot() // ACCEPTS THE NETWORK VARIABLES FORM OR SENDS THE DEFAULT IND
   String st_pass = "";
 
   boolean reset = false;
-  
+
   for (uint8_t i=0; i<server.args(); i++){
     String formName = server.argName(i);
     String formValue = server.arg(i);
-    
+
     Serial.println(formName + ": " + formValue);
     if (formName == "ap_ssid"){
       ap_ssid = formValue;
@@ -376,11 +376,11 @@ void handleRoot() // ACCEPTS THE NETWORK VARIABLES FORM OR SENDS THE DEFAULT IND
     clearMemory();
     initializeNetworkVariables();
     setup();
-  } else if (ap_ssid.length() > 0 && 
-      ap_pass.length() > 0 && 
-      st_ssid.length() > 0 && 
+  } else if (ap_ssid.length() > 0 &&
+      ap_pass.length() > 0 &&
+      st_ssid.length() > 0 &&
       st_pass.length() > 0){
-        
+
       server.send_P(200, "text/html",INDEX2_HTML);
       NetworkVariables vars = {ap_ssid,ap_pass,st_ssid,st_pass};
       setupNewNetworkVariables(vars);
@@ -428,10 +428,10 @@ void prepareIds() {
 
 boolean connectUDP(){
   boolean state = false;
-  
+
   Serial.println("");
   Serial.println("Connecting to UDP");
-  
+
   if(UDP.beginMulticast(WiFi.localIP(), ipMulti, portMulti)) {
     Serial.println("Connection successful");
     state = true;
@@ -439,7 +439,7 @@ boolean connectUDP(){
   else{
     Serial.println("Connection failed");
   }
-  
+
   return state;
 }
 
@@ -450,12 +450,12 @@ void startHttpServer() {
     });
 
     server.on("/upnp/control/basicevent1", HTTP_POST, []() {
-      Serial.println("########## Responding to  /upnp/control/basicevent1 ... ##########");      
-  
-      String request = server.arg(0);      
+      Serial.println("########## Responding to  /upnp/control/basicevent1 ... ##########");
+
+      String request = server.arg(0);
       Serial.print("request:");
       Serial.println(request);
- 
+
       if(request.indexOf("<BinaryState>1</BinaryState>") > 0) {
           Serial.println("Got Turn on request");
           turnOnRelay();
@@ -465,7 +465,7 @@ void startHttpServer() {
           Serial.println("Got Turn off request");
           turnOffRelay();
       }
-      
+
       server.send(200, "text/plain", "");
     });
 
@@ -498,17 +498,17 @@ void startHttpServer() {
               "</action>"
             "</scpd>\r\n"
             "\r\n";
-            
+
       server.send(200, "text/plain", eventservice_xml.c_str());
     });
-    
+
     server.on("/setup.xml", HTTP_GET, [](){
       Serial.println(" ########## Responding to setup.xml ... ########\n");
 
       IPAddress localIP = WiFi.localIP();
       char s[16];
       sprintf(s, "%d.%d.%d.%d", localIP[0], localIP[1], localIP[2], localIP[3]);
-    
+
       String setup_xml = "<?xml version=\"1.0\"?>"
             "<root>"
              "<device>"
@@ -528,17 +528,17 @@ void startHttpServer() {
                       "<eventSubURL>/upnp/event/basicevent1</eventSubURL>"
                       "<SCPDURL>/eventservice.xml</SCPDURL>"
                   "</service>"
-              "</serviceList>" 
+              "</serviceList>"
               "</device>"
             "</root>\r\n"
             "\r\n";
-            
+
         server.send(200, "text/xml", setup_xml.c_str());
-        
+
         Serial.print("Sending :");
         Serial.println(setup_xml);
     });
-      
+
     Serial.println("HTTP Server started ..");
 }
 
@@ -553,7 +553,7 @@ void respondToSearch() {
   char s[16];
   sprintf(s, "%d.%d.%d.%d", localIP[0], localIP[1], localIP[2], localIP[3]);
 
-  String response = 
+  String response =
        "HTTP/1.1 200 OK\r\n"
        "CACHE-CONTROL: max-age=86400\r\n"
        "DATE: Fri, 15 Apr 2016 04:56:29 GMT\r\n"
@@ -568,7 +568,7 @@ void respondToSearch() {
 
   UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
   UDP.write(response.c_str());
-  UDP.endPacket();                    
+  UDP.endPacket();
 
   Serial.println("Response sent !");
 }
